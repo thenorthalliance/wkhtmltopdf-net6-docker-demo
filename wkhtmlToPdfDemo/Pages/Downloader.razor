@@ -1,0 +1,93 @@
+﻿@page "/downloader"
+@using WkHtmlToPdfDotNet
+@using WkHtmlToPdfDotNet.Contracts
+@inject IJSRuntime Js
+@inject IConverter Converter
+
+<PageTitle>Url to PDF</PageTitle>
+
+<h1>Url to PDF</h1>
+<EditForm Model="@model">
+    <div>
+        Url
+        <InputText @bind-Value="model.Url" DisplayName="Url"/>
+    </div>
+    <div>
+        Add header
+        <InputCheckbox @bind-Value="model.AddHeader" DisplayName="Add header"/>
+    </div>
+    <div>
+        Use external links
+        <InputCheckbox @bind-Value="model.UseExternalLinks" DisplayName="Use external links"/>
+    </div>
+    <div>
+        User print media
+        <InputCheckbox @bind-Value="model.UseMediaPrint" DisplayName="User print media"/>
+    </div>
+    <div>
+        Output file name
+        <InputText @bind-Value="model.OutputFileName" />
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="IncrementCount">Generate</button>
+    </div>
+</EditForm>
+@code {
+    private int currentCount = 0;
+
+    class Model
+    {
+        public string Url { get; set; }
+        public string OutputFileName { get; set; }
+        public bool AddHeader { get; set; }
+        public bool UseExternalLinks { get; set; }
+        public bool UseMediaPrint { get; set; }
+    }
+    private Model model = new Model()
+    {
+        UseMediaPrint = true,
+        Url = "https://google.com",
+        OutputFileName = "Example"
+    };
+
+    private void IncrementCount()
+    {
+
+        if (model.Url.Contains("?"))
+            {
+                model.Url = model.Url.Split("?")[0];
+            }
+
+            var doc = new HtmlToPdfDocument()
+        {
+            GlobalSettings =
+            {
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4Plus,
+
+            },
+            Objects =
+            {
+                new ObjectSettings()
+                {
+                    PagesCount = true,
+                    UseExternalLinks = model.UseExternalLinks,
+                    WebSettings =
+                    {
+                        DefaultEncoding = "utf-8", PrintMediaType = model.UseMediaPrint
+                    },
+
+                    HeaderSettings = !model.AddHeader ? new HeaderSettings() : new HeaderSettings() { FontSize = 9, Right = "Page [page] of [toPage]", Line = true, Spacing = 2.812 },
+                    Page = model.Url,
+
+                }
+            }
+        };
+
+            var bytes = Converter.Convert(doc);
+            Js.SaveAs($"{model.OutputFileName}.pdf", bytes);
+        }
+
+
+}

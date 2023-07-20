@@ -1,0 +1,17 @@
+﻿version: '3.5'
+services:
+  pdftowkhtmldemo:
+   image: ${DOCKER_REGISTRY-}wkhtmltopdf-image
+   build:
+    context: ./
+    dockerfile: dockerfile
+   environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    - ASPNETCORE_URLS=https://+:*;http://+:*
+    - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+    - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
+   ports:
+    - "8001:5001"
+    - "8000:5000"
+   volumes:
+    - C:\git\wkhtmltopdf-net6-docker-demo\cert:/https
