@@ -3,6 +3,12 @@
 @using WkHtmlToPdfDotNet.Contracts
 @inject IJSRuntime Js
 @inject IConverter Converter
+@inject IConfiguration Configuration
+
+@if (bool.Parse(Configuration["AllowUI"]) == false)
+{
+    throw new Exception("UI not allowed");
+}
 
 <PageTitle>Url to PDF</PageTitle>
 

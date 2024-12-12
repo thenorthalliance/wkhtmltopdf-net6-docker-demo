@@ -1,6 +1,6 @@
 ﻿# Minimal blazor solution for wkhtmlToPdf
 
-> This solution runs **.net 6 blazor** app inside .net6 runtime docker image
+> This solution runs **.net 8 blazor** app inside .net8 runtime docker image
 > 
 > Uses WkhtmlToPdf library as pdf renderer
 
